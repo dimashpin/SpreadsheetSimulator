@@ -13,7 +13,8 @@ namespace SpreadsheetSimulator
             T1.PrintCell();
             Console.WriteLine();
             T1.PrintCell(1, 2);
-
+            T1.TextFormating();
+            //T1.CellReference();
         }
     }
 }
