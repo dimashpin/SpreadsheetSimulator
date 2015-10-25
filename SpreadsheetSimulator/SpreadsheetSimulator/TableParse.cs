@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Data;
 
 namespace SpreadsheetSimulator
 {
@@ -45,49 +46,47 @@ namespace SpreadsheetSimulator
             }
         }
 
-        //printing text without "'" sylobol
         public void TextFormating()
         {
             foreach (List<string> r in grid)
             {
                 foreach (string c in r)
                 {
+                    // getting rid of "'"
                     if (c.StartsWith("'"))
                         Console.Write(c.TrimStart('\'') + "\t");
+
+                    //cell reference
                     else if (c[0] == '=' && char.IsLetter(c[1]))
                     {
                         int i = 0;
-                        //string syl = c.ToString();
                         for (char ch = 'A'; c[1] >= ch; ch++) i++;
                         Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
                     }
+
+                    //parsing the expression
                     else if (c[0] == '=' && char.IsDigit(c[1]))
                     {
-                        
-                      int nResult = 0;
-                        Match oMatch = Regex.Match("23 + 323 =", @"(\d +)\s * ([+-*/])\s * (\d +)(\s *=)");
-                        if (oMatch.Success)
-                        {
-                            int a = Convert.ToInt32(oMatch.Groups[1].Value);
-                            int b = Convert.ToInt32(oMatch.Groups[3].Value);
-                            switch (oMatch.Groups[2].Value)
-                            {
-                                case "+":
-                                    nResult = a + b;
-                                    break;
-                                case "-":
-                                    nResult = a - b;
-                                    break;
-                                case "*":
-                                    nResult = a * b;
-                                    break;
-                                case "/":
-                                    nResult = a / b;
-                                    break;
-                            }
-                        }
-                        Console.Write(nResult+ "\t");
+                        // need to check out the datetable.compute method
+                        var result = new DataTable().Compute(c.TrimStart('='), null);
+                        Console.Write(result+ "\t");
                     }
+
+                    //cell reference arithmetic operations
+                    //recursion method???
+                    else if (c[0] == '=' && char.IsLetter(c[1]) && c.Length > 3)
+                    {
+                        //first cell reference
+                        int firstNumber;
+                        int i = 0;
+                        for (char ch = 'A'; c[1] >= ch; ch++) i++;
+                        firstNumber = Int32.Parse(grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]);
+
+                        int i = 0;
+                        for (char ch = 'A'; c[1] >= ch; ch++) i++;
+                        Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
+                    }
+
                     else
                         Console.Write(c + "\t");
                 }
