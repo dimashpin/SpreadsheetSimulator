@@ -8,13 +8,21 @@ namespace SpreadsheetSimulator
     {
         static void Main()
         {
+            string[,] grid;
+            string path = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt";
             TableParse T1 = new TableParse();
-            T1.tbParse(@"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt");
-            T1.PrintCell();
+            grid = T1.TableSize(path);
+            T1.TbParse(path, ref grid);
+            T1.GridFormating(ref grid);
+            T1.PrintCell(grid);
+            
+
+            //T1.PrintCell();
             Console.WriteLine();
-            T1.PrintCell(1, 2);
-            T1.TextFormating();
-            //T1.CellReference();
+            //T1.PrintCell(1, 2);
+
         }
     }
+
+
 }

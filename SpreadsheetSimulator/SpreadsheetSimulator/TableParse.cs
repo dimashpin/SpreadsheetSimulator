@@ -10,20 +10,17 @@ namespace SpreadsheetSimulator
     {
         string line = "";
         string cell = null;
-        public int row { get; set; }
-        public int column { get; set; }
-        List<List<string>> grid = new List<List<string>>();
+        public int row { get; set; } = 0;
+        public int column { get; set; } = 0;
+        static int tbRow;
+        static int tbColumn;
 
-        //parsing through the output
-        public void tbParse(string path)
+        // determine the size of array using the first line
+        public string[,] TableSize(string path)
         {
             StreamReader MyStreamReader = new StreamReader(path);
-            row = 0;
-            column = 0;
-            while (line != null)
             {
                 line = MyStreamReader.ReadLine();
-                grid.Add(new List<string>());
                 if (line != null)
                 {
                     foreach (char ch in line)
@@ -31,68 +28,154 @@ namespace SpreadsheetSimulator
                         if (ch != '\t') cell += ch;
                         else
                         {
-                            grid[column].Add(cell);
-                            row++;
-                            //Console.WriteLine(cell);
+                            tbRow = Int32.Parse(cell);
                             cell = null;
                         }
                     }
-                    grid[column].Add(cell);
-                    row++;
-                    //Console.WriteLine(cell);
-                    cell = null;
+                    // the rest converted into an amount of columns
+                    tbColumn = Int32.Parse(cell);
                 }
-                column++;
+                Console.WriteLine("Rows = {0}, Columns = {1}", tbRow, tbColumn);
+                return (new string[tbRow, tbColumn]);
             }
         }
 
-        public void TextFormating()
+        //parsing through the output and putting the chunks into created array
+        public void TbParse(string path, ref string[,] grid)
         {
-            foreach (List<string> r in grid)
+            bool firstLine = true;
+            StreamReader MyStreamReader = new StreamReader(path);
+            column = 0;
+            row = 0;
+            while (line != null)
             {
-                foreach (string c in r)
+                line = MyStreamReader.ReadLine();
+                if (firstLine)
                 {
-                    // getting rid of "'"
-                    if (c.StartsWith("'"))
-                        Console.Write(c.TrimStart('\'') + "\t");
+                    firstLine = false;
+                    continue;
+                }
 
-                    //cell reference
-                    else if (c[0] == '=' && char.IsLetter(c[1]))
+                if (line != null)
+                {
+                    foreach (char ch in line)
                     {
-                        int i = 0;
-                        for (char ch = 'A'; c[1] >= ch; ch++) i++;
-                        Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
+                        if (ch != '\t') cell += ch;
+                        else
+                        {
+                            grid[row, column] = cell;
+                            column++;
+                            cell = null;
+                        }
                     }
+                    // the rest converted into the last cell of the current row
+                    grid[row, column] = cell;
+                    row++;
+                    column = 0;
+                    cell = null;
+                }
+            }
+            MyStreamReader.Close();
+        }
 
-                    //parsing the expression
-                    else if (c[0] == '=' && char.IsDigit(c[1]))
-                    {
-                        // need to check out the datetable.compute method
-                        var result = new DataTable().Compute(c.TrimStart('='), null);
-                        Console.Write(result+ "\t");
-                    }
-
-                    //cell reference arithmetic operations
-                    //recursion method???
-                    else if (c[0] == '=' && char.IsLetter(c[1]) && c.Length > 3)
-                    {
-                        //first cell reference
-                        int firstNumber;
-                        int i = 0;
-                        for (char ch = 'A'; c[1] >= ch; ch++) i++;
-                        firstNumber = Int32.Parse(grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]);
-
-                        int i = 0;
-                        for (char ch = 'A'; c[1] >= ch; ch++) i++;
-                        Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
-                    }
-
-                    else
-                        Console.Write(c + "\t");
+        //printing all cell from the output
+        public void PrintCell(object[,] matrix)
+        {
+            for (int i = 0; i <= matrix.GetLength(0) - 1; i++)
+            {
+                for (int j = 0; j <= matrix.GetLength(1) - 1; j++)
+                {
+                    Console.Write(matrix[i, j] + "\t");
                 }
                 Console.WriteLine();
             }
         }
+
+        public void PrintCell(object[,] matrix, int row, int column)
+        {
+            Console.WriteLine("The value of cell with the adress row = {0}, column = {1} is {2}",
+                row, column, matrix[row - 1, column - 1]);
+        }
+
+        // calculating a string of arithmetic expression
+        // need to check out the datetable.compute method 
+        public void CalculateString(ref string exp)
+        {
+            exp = Convert.ToString(new DataTable().Compute(exp.TrimStart('='), null));
+        }
+
+        public void FormatString(ref string exp)
+        {
+        }
+
+        /*
+        public void GridParse(string exp)
+        {
+            string[] chunk = new string[10];
+            int i = 0;
+            for (char ch = 'A'; exp[1] >= ch; ch++) i++;
+            chunk[0] = (grid[Convert.ToInt32(exp.Remove][i - 1]);
+
+        }
+        */
+
+        public void GridFormating(ref string[,] grid)
+        {
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    string str = grid[i, j];
+                    // getting rid of "'"
+                    if (grid[i, j].StartsWith("'")) grid[i, j] = grid[i, j].TrimStart('\'');
+
+                    else if (str[0] == '=')
+                    {
+                        CalculateString(ref str);
+                        grid[i, j] = str;
+                    }
+                }
+            }
+
+
+
+
+            //cell reference
+            /*
+            else if (str[0] == '=' && char.IsLetter(str[1]))
+            {
+                 if 
+                int i = 0;
+                for (char ch = 'A'; c[1] >= ch; ch++) i++;
+                Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
+            }
+
+            //parsing the expression
+            else if (c[0] == '=' && char.IsDigit(c[1])) CalculateString(c);
+
+            //cell reference arithmetic operations
+            //recursion method???
+            else if (c[0] == '=' && char.IsLetter(c[1]) && c.Length > 3)
+            {
+                //first cell reference
+                int firstNumber;
+                int i = 0;
+                for (char ch = 'A'; c[1] >= ch; ch++) i++;
+                firstNumber = Int32.Parse(grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]);
+
+                int i = 0;
+                for (char ch = 'A'; c[1] >= ch; ch++) i++;
+                Console.Write((grid[Convert.ToInt32(c.Substring(2, c.Length - 2))][i - 1]) + "\t");
+            }
+
+            else
+                Console.Write(c + "\t");
+        }
+        Console.WriteLine();
+        */
+
+        }
+
         /*
                 public void CellReference()
                 {
@@ -112,26 +195,5 @@ namespace SpreadsheetSimulator
                     }
                 }
                 */
-
-
-        //printing all cell from the output
-        public void PrintCell()
-        {
-            foreach (List<string> r in grid)
-            {
-                foreach (string c in r)
-                {
-                    Console.Write(c + "\t");
-                }
-                Console.WriteLine();
-            }
-        }
-
-        //printing one cell from the output
-        public void PrintCell(int row, int column)
-        {
-            Console.WriteLine("The value of cell with the adress row = {0}, column = {1} is {2}",
-                row, column, grid[row][column]);
-        }
     }
 }
