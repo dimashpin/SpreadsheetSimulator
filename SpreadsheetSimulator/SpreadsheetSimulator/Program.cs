@@ -15,10 +15,13 @@ namespace SpreadsheetSimulator
             T1.TbParse(path, ref grid);
             T1.GridFormating(ref grid);
             T1.PrintCell(grid);
+
+
             
 
             //T1.PrintCell();
             Console.WriteLine();
+            T1.CellReference("B2+D3");
             //T1.PrintCell(1, 2);
 
         }

@@ -101,24 +101,33 @@ namespace SpreadsheetSimulator
         // need to check out the datetable.compute method 
         public void CalculateString(ref string exp)
         {
-            exp = Convert.ToString(new DataTable().Compute(exp.TrimStart('='), null));
+            exp = Convert.ToString(new DataTable().Compute(exp, null));
         }
 
         public void FormatString(ref string exp)
         {
         }
 
-        /*
-        public void GridParse(string exp)
+        public void CellReference (string exp)
         {
-            string[] chunk = new string[10];
-            int i = 0;
-            for (char ch = 'A'; exp[1] >= ch; ch++) i++;
-            chunk[0] = (grid[Convert.ToInt32(exp.Remove][i - 1]);
-
+            int innerColumn = 0;
+            int innerRow = 0;
+            string result = "";
+            string[] split = exp.Split(new char[] { '+', '-', '*', '/' });
+            foreach (string s in split)
+            {
+                for (int j = 0; j < s.Length; j++)
+                {
+                    if (s[j] >= 'A' && s[j] <= 'Z')
+                    {
+                        innerColumn = (int)((s[j] - 'A' + 1));
+                    }
+                    else innerRow += (int)s[j];
+                }
+            }
+            Console.WriteLine(innerColumn + innerRow);
         }
-        */
-
+        
         public void GridFormating(ref string[,] grid)
         {
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -127,15 +136,35 @@ namespace SpreadsheetSimulator
                 {
                     string str = grid[i, j];
                     // getting rid of "'"
-                    if (grid[i, j].StartsWith("'")) grid[i, j] = grid[i, j].TrimStart('\'');
+                    if (str.StartsWith("'"))
+                        grid[i, j] = str.Substring(1, str.Length - 1);
 
-                    else if (str[0] == '=')
+
+                    else if (str.StartsWith("="))
                     {
-                        CalculateString(ref str);
-                        grid[i, j] = str;
+                        str = str.Substring(1, str.Length - 1);
+                        grid[i, j] = str.Substring(1, str.Length - 1);
+                        foreach (char ch in str)
+                        {
+                            if (ch == '+' || ch == '-' || ch == '*' || ch == '/')
+                            {
+                                CalculateString(ref str);
+                                grid[i, j] = str;
+                                break;                             
+                            }
+
+                            else if (Regex.IsMatch(str, @"[a-zA-Z]+"))
+                            {
+
+                                grid[i, j] = "CATCHED";
+                            }
+                        }
+                    }
+                        
                     }
                 }
             }
+        }
 
 
 
@@ -174,7 +203,7 @@ namespace SpreadsheetSimulator
         Console.WriteLine();
         */
 
-        }
+        
 
         /*
                 public void CellReference()
@@ -196,4 +225,3 @@ namespace SpreadsheetSimulator
                 }
                 */
     }
-}
