@@ -12,6 +12,7 @@ namespace SpreadsheetSimulator
             string path = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt";
             TableParse T1 = new TableParse();
             grid = T1.TableSize(path);
+
             T1.TbParse(path, ref grid);
             T1.GridFormating(ref grid);
             T1.PrintCell(grid);
@@ -21,7 +22,7 @@ namespace SpreadsheetSimulator
 
             //T1.PrintCell();
             Console.WriteLine();
-            T1.CellReference("B2+D3");
+            
             //T1.PrintCell(1, 2);
 
         }
