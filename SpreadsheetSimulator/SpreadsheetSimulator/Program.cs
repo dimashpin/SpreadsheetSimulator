@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
 
 namespace SpreadsheetSimulator
 {
@@ -9,24 +7,19 @@ namespace SpreadsheetSimulator
         static void Main()
         {
             string[,] grid;
-            string path = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt";
+            string input = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt";
+            string output = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Output.txt";
             TableParse T1 = new TableParse();
-            grid = T1.TableSize(path);
+            grid = T1.MatrixCreation(input);
 
-            T1.TbParse(path, ref grid);
-            T1.GridFormating(ref grid);
-            T1.PrintCell(grid);
-
-
-            
-
-            //T1.PrintCell();
+            T1.MatrixData(input, ref grid);
+            T1.PrintData(grid);
             Console.WriteLine();
+            T1.MatrixParse(ref grid);
+            T1.PrintData(grid);
+            T1.PrintData(grid, output);
             
-            //T1.PrintCell(1, 2);
-
+            Console.WriteLine();
         }
     }
-
-
 }
