@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetSimulator", "SpreadsheetSimulator\SpreadsheetSimulator.csproj", "{5C5096E6-65A9-44E3-8A62-F2C3FB0818B9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9254AB49-E244-4DCF-985B-25DF5BE5130B}"
+	ProjectSection(SolutionItems) = preProject
+		SpreadsheetSimulator\Output.txt = SpreadsheetSimulator\Output.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

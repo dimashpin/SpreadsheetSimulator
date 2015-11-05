@@ -108,74 +108,97 @@ namespace SpreadsheetSimulator
             mySW.Close();
         }
 
-        public void CalcExpr(ref string exp)
-        {
-            // calculate an arithmetic expression.
-            // need to check out the datetable.compute method 
-
-       //     if (exp.StartsWith("=")) exp = exp.Substring(1);
-                exp = Convert.ToString(new DataTable().Compute(exp, null));
-        }
         public void MatrixParse(ref string[,] matrix)
         {
             //formating text, caclulation of all expressions
 
             // loop through all cells
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            try
             {
-                for (int j = 0; j < matrix.GetLength(1); j++)
+                for (int i = 0; i < matrix.GetLength(0); i++)
                 {
-                    string str = matrix[i, j];
-                    // getting rid of "'".
-                    if (str.StartsWith("'"))
-                        matrix[i, j] = str.Substring(1);
-                    else if (str.StartsWith("="))
+                    for (int j = 0; j < matrix.GetLength(1); j++)
                     {
-                        foreach (char ch in str)
+                        string str = matrix[i, j];
+                        // getting rid of "'".
+                        if (str.StartsWith("'"))
+                            matrix[i, j] = str.Substring(1);
+                        else if (str.StartsWith("="))
                         {
-                            str = CellParse(str, matrix);
-                            CalcExpr(ref str);
-                            matrix[i, j] = str;
-                            break;
+                            foreach (char ch in str)
+                            {
+                                str = CellParse(str, matrix);
+                                CalcExpr(ref str);
+                                matrix[i, j] = str;
+                                break;
+                            }
                         }
                     }
                 }
             }
+            catch (NullReferenceException)
+            {
+                Console.Write("#Null exc");
+            }
         }
+
         public string CellParse(string exp, string[,] matrix)
         {
             int column, row = 0;
             string chunk;
             string[] split;
-                
-            if (exp.StartsWith("="))
-                exp = exp.Substring(1);
-            split = exp.Split(new char[] { '+', '-', '*', '/' });
-            // Go through the split cell references
-            for (int i = 0; i < split.Length; i++)
-            {
-                chunk = split[i];
-                // Go through the chunks
-                for (int j = 0; j < chunk.Length; j++)
-                {
-                    if (chunk[j] >= 'A' && chunk[j] <= 'Z')
-                    {
-                        column = (int)((chunk[j] - 'A'));
-                        row = Int32.Parse(chunk.Substring(j + 1)); //doen't read 2 digits adress (solved)
-                        //row = (int)Char.GetNumericValue(chunk.Substring(j+1)); 
 
-                        if ((matrix[row - 1, column]).StartsWith("="))
+            try
+            {
+                if (exp.StartsWith("="))
+                    exp = exp.Substring(1);
+                split = exp.Split(new char[] { '+', '-', '*', '/' });
+                // Go through the split cell references
+                for (int i = 0; i < split.Length; i++)
+                {
+                    chunk = split[i];
+                    // Go through the chunks
+                    for (int j = 0; j < chunk.Length; j++)
+                    {
+                        if (chunk[j] >= 'A' && chunk[j] <= 'Z')
                         {
-                            //recursion until valid value reached
-                            string temp = CellParse((matrix[row - 1, column]), matrix);
-                            exp = exp.Replace(chunk, temp);
+                            column = (int)((chunk[j] - 'A'));
+                            row = Int32.Parse(chunk.Substring(j + 1)); 
+                            if ((matrix[row - 1, column]).StartsWith("="))
+                            {
+                                //recursion until valid value reached
+                                string temp = CellParse((matrix[row - 1, column]), matrix);
+                                exp = exp.Replace(chunk, temp);
+                            }
+                            exp = exp.Replace(chunk, matrix[row - 1, column]);
+                            break;
                         }
-                        exp = exp.Replace(chunk, matrix[row - 1, column]);
-                        break;
                     }
                 }
+                return exp;
             }
-            return exp;
+            catch (IndexOutOfRangeException)
+            {
+                return exp = "#Indexoutofbounds";
+            }
+        }
+
+        public void CalcExpr(ref string exp)
+        {
+            // calculate an arithmetic expression.
+
+            try
+            {
+                exp = Convert.ToString(new DataTable().Compute(exp, null));
+            }
+            catch (FormatException)
+            {
+                exp = "#Wrong format";
+            }
+            catch (DataException)
+            {
+                exp = "#Can't find data";
+            }
         }
     }
 }
