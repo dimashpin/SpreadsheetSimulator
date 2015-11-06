@@ -28,6 +28,7 @@ Sheet processing rules are:
 - In case of any error in cell evaluation resulting cell must contain word with error description started with ‘#’ symbol.
 
 Input and Output Program should take sheet description with formulas from the standard input, evaluate it, and print resulting table to the standard output. Input data represented as tabulation-separated table. First line contains pair of integers separated with tabulation and designating table's height and length. Then, from the next line the cells themselves come, each in the grammar described above.  
+
 Sample Input:
 ```
 3  4
