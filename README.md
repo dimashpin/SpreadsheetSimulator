@@ -1,5 +1,6 @@
 # SpreadsheetSimulator
 Here is a task:
+
 Need to develop a simple batch spreadsheet processor. It must be able to process cells just like in a ordinary spreadsheet, but will use simplified expressions. Each cell may contain: 
 - Nothing.
 - Non-negative integer number. 
