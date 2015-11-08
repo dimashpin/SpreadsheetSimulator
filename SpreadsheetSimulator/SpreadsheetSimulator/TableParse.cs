@@ -94,7 +94,7 @@ namespace SpreadsheetSimulator
                 row, column, matrix[row - 1, column - 1]);
         }
 
-        public void PrintData(string[,] matrix, string path)
+        public void SaveData(string[,] matrix, string path)
         {
             StreamWriter mySW = new StreamWriter(path, false);
             for (int i = 0; i < matrix.GetLength(0); i++)
