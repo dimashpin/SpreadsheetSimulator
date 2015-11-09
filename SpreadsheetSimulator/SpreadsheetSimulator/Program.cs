@@ -5,45 +5,15 @@ namespace SpreadsheetSimulator
 {
     class Program
     {
-        string[,] grid;
-    
-            string output = "";
-        string input = Console.ReadLine();
-        string answer = "";
-
-        private bool void KeysLogic(out string path)
-        {
-            string answer = "";
-            string path = "";
-            bool noKey = false;
-            answer = Console.ReadLine();
-            do
-            {
-                if (answer.ToUpper().Equals("Y"))
-                {
-                    Console.WriteLine("Please type the input file path and press Enter...");
-                    return true;
-                    path = Console.ReadLine();
-                }
-                else if (answer.ToUpper().Equals("N"))
-                    path = null;
-                    return false;
-                       
-                else
-                {
-                    Console.WriteLine("You typed a wrong key, please Enter Yes (Y) or No (N)");
-                    continue;
-                }
-            }
-
-        }
-
         static void Main()
         {
             Console.WriteLine("This program allows you to process .txt files with tab separated data");
-            Console.WriteLine("Please type the output file path and press Enter...");
-            //string input = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Source.txt";
-            //string output = @"C:\Users\Dimas\Source\Repos\SpreadsheetSimulator\SpreadsheetSimulator\SpreadsheetSimulator\Output.txt";
+            Console.WriteLine("Please type the input file path and press Enter...");
+            string[,] grid;
+
+            string output = "";           
+            string answer = "";
+            string input = Console.ReadLine();
 
 
             if (!File.Exists(input))
@@ -61,7 +31,7 @@ namespace SpreadsheetSimulator
                         break;
                     else
                     {
-                        Console.WriteLine("You typed a wrong key, please Enter Yes (Y) or No (N)");
+                        Console.WriteLine("You typed a wrong key, please Enter Y (Yes) or N (No)");
                         continue;
                     }
 
@@ -76,7 +46,7 @@ namespace SpreadsheetSimulator
             //Displaying data
             if (File.Exists(input))
             {
-                TableParse T1 = new TableParse();
+                DataParse T1 = new DataParse();
                 grid = T1.MatrixCreation(input);
                 T1.MatrixData(input, ref grid);
                 Console.WriteLine("\n--- INPUT DATA ---");
@@ -101,7 +71,7 @@ namespace SpreadsheetSimulator
                         break;
                     else
                     {
-                        Console.WriteLine("You typed a wrong key, please Enter Yes (Y) or No (N)");
+                        Console.WriteLine("You typed a wrong key, please Enter Y (Yes) or N (No)");
                         continue;
                     }                   
                 }

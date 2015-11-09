@@ -4,7 +4,7 @@ using System.Data;
 
 namespace SpreadsheetSimulator
 {
-    class TableParse
+    class DataParse
     {
         string line = "";
         string cell;
@@ -87,26 +87,7 @@ namespace SpreadsheetSimulator
                 }
                 Console.WriteLine();
             }
-        }
-        public void PrintData(string[,] matrix, int row, int column)
-        {
-            Console.WriteLine("The value of cell with the adress row = {0}, column = {1} is {2}",
-                row, column, matrix[row - 1, column - 1]);
-        }
-
-        public void SaveData(string[,] matrix, string path)
-        {
-            StreamWriter mySW = new StreamWriter(path, false);
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    mySW.Write(matrix[i, j] + "\t");
-                }
-                mySW.WriteLine();
-            }
-            mySW.Close();
-        }
+        }        
 
         public void MatrixParse(ref string[,] matrix)
         {
@@ -199,6 +180,20 @@ namespace SpreadsheetSimulator
             {
                 exp = "#Can't find data";
             }
+        }
+
+        public void SaveData(string[,] matrix, string path)
+        {
+            StreamWriter mySW = new StreamWriter(path, false);
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    mySW.Write(matrix[i, j] + "\t");
+                }
+                mySW.WriteLine();
+            }
+            mySW.Close();
         }
     }
 }
